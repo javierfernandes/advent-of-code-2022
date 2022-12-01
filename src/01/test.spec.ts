@@ -1,4 +1,4 @@
-import { top3ElvesByCalories } from "./index"
+import { top3Elves } from "./index"
 import { readFileSync } from "fs"
 import * as path from 'path'
 
@@ -8,7 +8,7 @@ describe('advent-of-code-2022 / 01', () => {
     [
     ] -> [0, 0, 0]
     `, () => {
-        expect(top3ElvesByCalories([])).toEqual([0,0,0])
+        expect(top3Elves([])).toEqual([0,0,0])
     })
 
     it(`
@@ -16,7 +16,7 @@ describe('advent-of-code-2022 / 01', () => {
       '10'
     ] -> [10, 0, 0]
     `, () => {
-        expect(top3ElvesByCalories(['10'])).toEqual([10, 0, 0])
+        expect(top3Elves(['10'])).toEqual([10, 0, 0])
     })
 
     it(`
@@ -26,7 +26,7 @@ describe('advent-of-code-2022 / 01', () => {
       '1'
     ] -> [10, 1, 0]
     `, () => {
-        expect(top3ElvesByCalories(['10', '', '1'])).toEqual([10, 1, 0])
+        expect(top3Elves(['10', '', '1'])).toEqual([10, 1, 0])
     })
 
     it(`
@@ -36,7 +36,7 @@ describe('advent-of-code-2022 / 01', () => {
           '11'
         ] -> [11, 10, 0]
     `, () => {
-        expect(top3ElvesByCalories(['10', '', '11'])).toEqual([11, 10, 0])
+        expect(top3Elves(['10', '', '11'])).toEqual([11, 10, 0])
     })
 
     it(`
@@ -51,7 +51,7 @@ describe('advent-of-code-2022 / 01', () => {
           '2'
         ] -> [11, 10, 4]
     `, () => {
-        expect(top3ElvesByCalories([
+        expect(top3Elves([
             '5', '5',
             '',
             '10', '1',
@@ -63,7 +63,7 @@ describe('advent-of-code-2022 / 01', () => {
     describe('input data case', () => {
 
         it('should work fine with the example data', () => {
-            expect(top3ElvesByCalories([
+            expect(top3Elves([
                 '1000',
                 '2000',
                 '3000',
@@ -87,7 +87,7 @@ describe('advent-of-code-2022 / 01', () => {
 
         it('should give the result with the given input data', () => {
             const content = readFileSync(path.join(__dirname, 'input-data.txt'), 'utf8').split('\n')
-            const result = top3ElvesByCalories(content)
+            const result = top3Elves(content)
             expect(result).toEqual([
                 72070,
                 70586,

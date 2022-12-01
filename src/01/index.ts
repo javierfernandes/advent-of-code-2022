@@ -27,7 +27,7 @@ const updateTop3 = (current: Top3, other: number): Top3 => {
  *  - top3: the current top 3 max calories of elves
  *  - current: the calories count we are doing for the current elf up to this point
  */
-export const top3ElvesByCalories = (items: string[], top3: Top3  = [0, 0, 0], current: number = 0): Top3 => {
+export const top3Elves = (items: string[], top3: Top3  = [0, 0, 0], current: number = 0): Top3 => {
     // last item -> return top3 (maybe updated with the last elf we were counting)
     if (items.length === 0) return updateTop3(top3, current)
 
@@ -36,8 +36,8 @@ export const top3ElvesByCalories = (items: string[], top3: Top3  = [0, 0, 0], cu
     const [maybeCalories, ...restItems] = items
     return maybeCalories === ELF_BREAK_LINE ?
         // finished counting current -> maybe update top3 & continue with the rest of the list
-        top3ElvesByCalories(restItems, updateTop3(top3, current), 0)
+        top3Elves(restItems, updateTop3(top3, current), 0)
         :
         // still counting current elf -> accumulate calories & continue
-        top3ElvesByCalories(restItems, top3, current + parseInt(maybeCalories))
+        top3Elves(restItems, top3, current + parseInt(maybeCalories))
 }
