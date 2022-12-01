@@ -87,11 +87,15 @@ describe('advent-of-code-2022 / 01', () => {
 
         it('should give the result with the given input data', () => {
             const content = readFileSync(path.join(__dirname, 'input-data.txt'), 'utf8').split('\n')
-            expect(elfWithMostCalories(content)).toEqual([
+            const result = elfWithMostCalories(content)
+            expect(result).toEqual([
                 72070,
                 70586,
                 69149,
             ])
+            // sum is
+            expect(result.reduce((a, b) => a + b, 0))
+                .toEqual(211805)
         })
 
     })
