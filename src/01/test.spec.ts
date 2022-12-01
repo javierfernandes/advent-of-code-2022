@@ -13,7 +13,7 @@ describe('advent-of-code-2022 / 01', () => {
       '10'
     ] -> Elf<1, 10>
     `, () => {
-        expect(elfWithMostCalories(['10'])).toEqual([1, 10])
+        expect(elfWithMostCalories(['10'])).toEqual(10)
     })
 
     it(`
@@ -23,7 +23,7 @@ describe('advent-of-code-2022 / 01', () => {
       '1'
     ] -> Elf<1, 10>
     `, () => {
-        expect(elfWithMostCalories(['10', '', '1'])).toEqual([1, 10])
+        expect(elfWithMostCalories(['10', '', '1'])).toEqual(10)
     })
 
     it(`
@@ -33,7 +33,7 @@ describe('advent-of-code-2022 / 01', () => {
       '11'
     ] -> Elf<1, 10>
     `, () => {
-        expect(elfWithMostCalories(['10', '', '11'])).toEqual([2, 11])
+        expect(elfWithMostCalories(['10', '', '11'])).toEqual(11)
     })
 
     it(`
@@ -54,14 +54,14 @@ describe('advent-of-code-2022 / 01', () => {
             '10', '1',
             '',
             '2', '2'
-        ])).toEqual([2, 11])
+        ])).toEqual(11)
     })
 
     describe('input data case', () => {
 
         it('should give the result', () => {
             const content = readFileSync(path.join(__dirname, 'input-data.txt'), 'utf8').split('\n')
-            expect(elfWithMostCalories(content)).toEqual([40, 72070])
+            expect(elfWithMostCalories(content)).toEqual(72070)
         })
 
     })
