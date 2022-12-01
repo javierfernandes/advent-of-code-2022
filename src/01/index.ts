@@ -6,6 +6,7 @@
 //
 
 type Top3 = [first: number, second:number, third: number]
+const ELF_BREAK_LINE = ''
 
 /**
  * If the given "other" calories should be part of the top3 then it returns and updated one
@@ -33,7 +34,7 @@ export const top3ElvesByCalories = (items: string[], top3: Top3  = [0, 0, 0], cu
     // still calories to count
 
     const [maybeCalories, ...restItems] = items
-    return maybeCalories === '' ?
+    return maybeCalories === ELF_BREAK_LINE ?
         // finished counting current -> maybe update top3 & continue with the rest of the list
         top3ElvesByCalories(restItems, updateTop3(top3, current), 0)
         :
