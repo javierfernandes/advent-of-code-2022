@@ -21,18 +21,18 @@ const newTop3 = (current: Top3, other: number): Top3 => {
  *  - current: the calories count we are doing for the current elf up to this point
  */
 const recursiveTop3ElvesByCalories = (items: string[], top3: Top3, current: number): Top3 => {
-    // last item, return max(winner | current)
+    // last item -> return top3 (maybe updated with the last elf we were counting)
     if (items.length === 0) return newTop3(top3, current)
 
-    // processLine
+    // still calories to count
+
     const [maybeCalories, ...restItems] = items
-    if (maybeCalories === '') {
-        // ended with current -> compute who's best and create a next current
-        return recursiveTop3ElvesByCalories(restItems, newTop3(top3, current), 0)
-    } else {
-        // accumulate calories for current
-        return recursiveTop3ElvesByCalories(restItems, top3, current + parseInt(maybeCalories))
-    }
+    return maybeCalories === '' ?
+        // finished counting current -> maybe update top3 & continue with the rest of the list
+        recursiveTop3ElvesByCalories(restItems, newTop3(top3, current), 0)
+        :
+        // still counting current elf -> accumulate calories & continue
+        recursiveTop3ElvesByCalories(restItems, top3, current + parseInt(maybeCalories))
 }
 
 export const top3ElvesByCalories =
