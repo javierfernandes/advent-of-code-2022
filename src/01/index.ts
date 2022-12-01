@@ -7,7 +7,13 @@
 
 type Top3 = [first: number, second:number, third: number]
 
-const newTop3 = (current: Top3, other: number): Top3 => {
+/**
+ * If the given "other" calories should be part of the top3 then it returns and updated one
+ * Otherwise the top3 as it is.
+ * It is a "manual" basic impl. An "object" would take this away into a better abstraction, but it is not
+ * really necessary.
+ */
+const updateTop3 = (current: Top3, other: number): Top3 => {
     if (other >= current[0]) return [other, current[0], current[1]]
     if (other >= current[1]) return [current[0], other, current[1]]
     if (other >= current[2]) return [current[0], current[1], other]
@@ -22,18 +28,18 @@ const newTop3 = (current: Top3, other: number): Top3 => {
  */
 const recursiveTop3ElvesByCalories = (items: string[], top3: Top3, current: number): Top3 => {
     // last item -> return top3 (maybe updated with the last elf we were counting)
-    if (items.length === 0) return newTop3(top3, current)
+    if (items.length === 0) return updateTop3(top3, current)
 
     // still calories to count
 
     const [maybeCalories, ...restItems] = items
     return maybeCalories === '' ?
         // finished counting current -> maybe update top3 & continue with the rest of the list
-        recursiveTop3ElvesByCalories(restItems, newTop3(top3, current), 0)
+        recursiveTop3ElvesByCalories(restItems, updateTop3(top3, current), 0)
         :
         // still counting current elf -> accumulate calories & continue
         recursiveTop3ElvesByCalories(restItems, top3, current + parseInt(maybeCalories))
 }
 
-export const top3ElvesByCalories =
-    (items: string[]): Top3 => recursiveTop3ElvesByCalories(items, [0, 0, 0], 0)
+export const top3ElvesByCalories = (items: string[]): Top3 =>
+    recursiveTop3ElvesByCalories(items, [0, 0, 0], 0)
