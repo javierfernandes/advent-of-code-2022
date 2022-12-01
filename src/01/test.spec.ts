@@ -4,16 +4,19 @@ import * as path from 'path';
 
 describe('advent-of-code-2022 / 01', () => {
 
-    it('should return null if it is an empty list of calories', () => {
-        expect(elfWithMostCalories([])).toBe(null)
+    it(`
+    [
+    ] -> [0, 0, 0]
+    `, () => {
+        expect(elfWithMostCalories([])).toEqual([0,0,0])
     })
 
     it(`
     [
       '10'
-    ] -> Elf<1, 10>
+    ] -> [10, 0, 0]
     `, () => {
-        expect(elfWithMostCalories(['10'])).toEqual(10)
+        expect(elfWithMostCalories(['10'])).toEqual([10, 0, 0])
     })
 
     it(`
@@ -21,32 +24,32 @@ describe('advent-of-code-2022 / 01', () => {
       '10',
       '',
       '1'
-    ] -> Elf<1, 10>
+    ] -> [10, 1, 0]
     `, () => {
-        expect(elfWithMostCalories(['10', '', '1'])).toEqual(10)
+        expect(elfWithMostCalories(['10', '', '1'])).toEqual([10, 1, 0])
     })
 
     it(`
-    [
-      '10',
-      '',
-      '11'
-    ] -> Elf<1, 10>
+        [
+          '10',
+          '',
+          '11'
+        ] -> [11, 10, 0]
     `, () => {
-        expect(elfWithMostCalories(['10', '', '11'])).toEqual(11)
+        expect(elfWithMostCalories(['10', '', '11'])).toEqual([11, 10, 0])
     })
 
     it(`
-    [
-      '5',
-      '5'
-      '',
-      '10'
-      '1'
-      ''
-      '2'
-      '2'
-    ] -> Elf<1, 10>
+        [
+          '5',
+          '5'
+          '',
+          '10'
+          '1'
+          ''
+          '2'
+          '2'
+        ] -> [11, 10, 4]
     `, () => {
         expect(elfWithMostCalories([
             '5', '5',
@@ -54,14 +57,41 @@ describe('advent-of-code-2022 / 01', () => {
             '10', '1',
             '',
             '2', '2'
-        ])).toEqual(11)
+        ])).toEqual([11, 10, 4])
     })
 
     describe('input data case', () => {
 
-        it('should give the result', () => {
+        it('should work fine with the example data', () => {
+            expect(elfWithMostCalories([
+                '1000',
+                '2000',
+                '3000',
+                '',
+                '4000',
+                '',
+                '5000',
+                '6000',
+                '',
+                '7000',
+                '8000',
+                '9000',
+                '',
+                '10000',
+            ])).toEqual([
+                24000,
+                11000,
+                10000,
+            ])
+        })
+
+        it('should give the result with the given input data', () => {
             const content = readFileSync(path.join(__dirname, 'input-data.txt'), 'utf8').split('\n')
-            expect(elfWithMostCalories(content)).toEqual(72070)
+            expect(elfWithMostCalories(content)).toEqual([
+                72070,
+                70586,
+                69149,
+            ])
         })
 
     })
