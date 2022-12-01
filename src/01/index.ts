@@ -16,9 +16,9 @@ const newTop3 = (current: Top3, other: number): Top3 => {
 
 /**
  * Iterative recursive solution (tail recursive).
- * The data is carried as
- *  - winners: the current top 3 max calories of an elves
- *  - current: the count we are doing for the current elf up to this point
+ * The data is carried as fn arguments
+ *  - top3: the current top 3 max calories of elves
+ *  - current: the calories count we are doing for the current elf up to this point
  */
 const recursiveTop3ElvesByCalories = (items: string[], top3: Top3, current: number): Top3 => {
     // last item, return max(winner | current)
