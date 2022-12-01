@@ -5,6 +5,12 @@
 // Find the Elf carrying the most Calories. How many total Calories is that Elf carrying?
 //
 
+/**
+ * Iterative recursive solution (tail recursive).
+ * The data is carried as
+ *  - winner: the current max calories of an elf
+ *  - current: the count we are doing for the current elf up to this point
+ */
 const recursiveElfWithMostCalories = (items: string[], winner: number, current: number): number | null => {
     // last item, return max(winner | current)
     if (items.length === 0) return current === 0 ? null : Math.max(current, winner)
