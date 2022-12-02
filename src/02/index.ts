@@ -62,11 +62,10 @@ const RULES: Record<Shape, Record<Shape, RoundResult>> = {
 // ]
 
 // option 2 just declare the minimum rules without caring the order
-// const GAME_RULES_WITHOUT_ORDER = [
-//     '🧻'.beats('🪨'),
-//     '🪨'.beats('✂️'),
-//     '✂️'.beats('🧻'),
-// ]
+// const RULES = makeAllPossibleScenarios(
+//     '🧻'.beats('🪨').beats('✂️').beats('🧻'),
+// )
+
 
 type PlayInstruction = [them: Shape, me: Shape]
 
