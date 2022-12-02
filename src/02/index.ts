@@ -1,4 +1,5 @@
 import { pipe }  from 'ramda'
+
 //
 // --- Day 2: Rock Paper Scissors ---
 //
@@ -41,13 +42,9 @@ type PlayInstruction = [them: string, me: string]
 //
 //
 
-const parse = (s: string) : PlayInstruction => s.split(' ') as PlayInstruction
+const parse = (s: string) => s.split(' ') as PlayInstruction
 
-const computePlayScore = ([them, me]: PlayInstruction) => RULES[them][me]
-
-const shapeScore = (shape: string) => SHAPE_POINTS[shape]
-
-const computeRoundScore = (play: PlayInstruction) => computePlayScore(play) + shapeScore(play[1])
+const computeRoundScore = ([them, me]: PlayInstruction) => RULES[them][me] + SHAPE_POINTS[me]
 const playAndComputeRoundScore = pipe(parse, computeRoundScore)
 
 export const exercise = (plays: string[]) =>
