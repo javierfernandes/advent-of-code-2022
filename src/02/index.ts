@@ -77,9 +77,13 @@ const makePart = (parser: UsParser) => (plays: string[]) => plays.reduce(
 // part 1
 //
 
-const US_MAPPING : Mapping = { 'X': 'ROCK', 'Y': 'PAPER', 'Z': 'SCISSOR' }
+const PART1_MAPPING : Mapping = {
+    'X': 'ROCK',
+    'Y': 'PAPER',
+    'Z': 'SCISSOR'
+}
 
-export const part1 = makePart(us => US_MAPPING[us])
+export const part1 = makePart(us => PART1_MAPPING[us])
 
 //
 // part 2
@@ -91,19 +95,8 @@ const PART2_MAPPING: Record<string, RoundResult> = {
     Z: 'WIN'
 }
 
-const findShapeThat = (options: Record<Shape, RoundResult>, expected: RoundResult): Shape =>
-    Object.keys(options)
-        .find(key => options[key as Shape] === expected) as Shape
-
-const whatBeats = (theirs: Shape) => findShapeThat(RULES[theirs], 'WIN')
-const whatLosesAgainst = (theirs: Shape) => findShapeThat(RULES[theirs], 'LOSE')
-const chooseShape = (theirs:Shape, result: RoundResult): Shape => {
-    switch (result) {
-        case 'TIE': return theirs
-        case 'WIN': return whatBeats(theirs)
-        case 'LOSE': return whatLosesAgainst(theirs)
-        default:
-            throw new Error('Unknown expected result')
-    }
-}
-export const part2 = makePart((expectedResult, theirs) => chooseShape(theirs, PART2_MAPPING[expectedResult]))
+const findShapeThat = (options: Record<Shape, RoundResult>, expected: RoundResult) =>
+    Object.keys(options).find(key => options[key as Shape] === expected) as Shape
+export const part2 = makePart(
+    (expectedResult, theirs) => findShapeThat(RULES[theirs], PART2_MAPPING[expectedResult])
+)
