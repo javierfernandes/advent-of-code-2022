@@ -7,43 +7,44 @@ import { pipe }  from 'ramda'
 //
 
 // Shapes
-enum Shape { ROCK, PAPER, SCISSOR }; const { ROCK, PAPER, SCISSOR } = Shape
+type Shape = 'ROCK' | 'PAPER' | 'SCISSOR'
 
 const SHAPE_POINTS : Record<Shape, number> = {
-    [ROCK]: 1,
-    [PAPER]: 2,
-    [SCISSOR]: 3
+    ROCK: 1,
+    PAPER: 2,
+    SCISSOR: 3
 }
-enum RoundResult { WIN, TIE, LOSE }; const { WIN, TIE, LOSE } = RoundResult
+
+type RoundResult = 'WIN' | 'TIE' | 'LOSE'
 
 const RESULT_POINTS: Record<RoundResult, number> = {
-    [WIN]: 6,
-    [TIE]: 3,
-    [LOSE]: 0,
+    WIN: 6,
+    TIE: 3,
+    LOSE: 0,
 }
 
 // parsing rules
 type Mapping = Record<string, Shape>
-const THEM_MAPPING : Mapping = { 'A': ROCK, 'B': PAPER, 'C': SCISSOR }
-const US_MAPPING : Mapping = { 'X': ROCK, 'Y': PAPER, 'Z': SCISSOR }
+const THEM_MAPPING : Mapping = { 'A': 'ROCK', 'B': 'PAPER', 'C': 'SCISSOR' }
+const US_MAPPING : Mapping = { 'X': 'ROCK', 'Y': 'PAPER', 'Z': 'SCISSOR' }
 
 // game rules
 
 const RULES: Record<Shape, Record<Shape, RoundResult>> = {
-    [ROCK]: {
-        [ROCK]: TIE,
-        [PAPER]: WIN,
-        [SCISSOR]: LOSE,
+    ROCK: {
+        ROCK: 'TIE',
+        PAPER: 'WIN',
+        SCISSOR: 'LOSE',
     },
-    [PAPER]: {
-        [ROCK]: LOSE,
-        [PAPER]: TIE,
-        [SCISSOR]: WIN,
+    PAPER: {
+        ROCK: 'LOSE',
+        PAPER: 'TIE',
+        SCISSOR: 'WIN',
     },
-    [SCISSOR]: {
-        [ROCK]: WIN,
-        [PAPER]: LOSE,
-        [SCISSOR]: TIE,
+    SCISSOR: {
+        ROCK: 'WIN',
+        PAPER: 'LOSE',
+        SCISSOR: 'TIE',
     }
 }
 // other possible (flatten) declaration for the previous
