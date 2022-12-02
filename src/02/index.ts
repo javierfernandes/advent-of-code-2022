@@ -68,6 +68,13 @@ const parse = (parseUsPart: UsParser, s: string) => {
 const computeRoundScore = ([them, me]: PlayInstruction) => RESULT_POINTS[RULES[them][me]] + SHAPE_POINTS[me]
 const playAndComputeRoundScore = (usParser: UsParser, play: string) => computeRoundScore(parse(usParser, play))
 
+/**
+ * Higher-order function to create an "exercise" function for part 1 and part 2.
+ * They share a lot of code. The only difference is in the way the interprete (parse)
+ * the second column to resolve which Shape we are supposed to choose.
+ * In Part1 that's straightforward: directly map the X, Y, Z to a shape.
+ * In Part 2 it has an indirection: X, Y, Z -> expected Result + other player Shape -> our Shape
+ */
 const makePart = (parser: UsParser) => (plays: string[]) => plays.reduce(
     (total, play) => total + playAndComputeRoundScore(parser, play),
     0
