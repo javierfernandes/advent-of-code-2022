@@ -45,7 +45,6 @@ const parse = (s: string) : PlayInstruction => s.split(' ') as PlayInstruction
 
 const computePlayScore = ([them, me]: PlayInstruction): number => RULES[them][me]
 
-
 const shapeScore = (shape: string) => SHAPE_POINTS[shape]
 
 const computeRoundScore = (play: PlayInstruction) => computePlayScore(play) + shapeScore(play[1])
