@@ -7,58 +7,80 @@ import { pipe }  from 'ramda'
 //
 
 // Shapes
-enum Shape { ROCK, PAPER, SCISSOR }
-const { ROCK, PAPER, SCISSOR } = Shape
+enum Shape { ROCK, PAPER, SCISSOR }; const { ROCK, PAPER, SCISSOR } = Shape
 
-const SHAPE_POINTS : Record<Shape,number> = {
+const SHAPE_POINTS : Record<Shape, number> = {
     [ROCK]: 1,
     [PAPER]: 2,
     [SCISSOR]: 3
 }
+enum RoundResult { WIN, TIE, LOSE }; const { WIN, TIE, LOSE } = RoundResult
+
+const RESULT_POINTS: Record<RoundResult, number> = {
+    [WIN]: 6,
+    [TIE]: 3,
+    [LOSE]: 0,
+}
 
 // parsing rules
-const createMapping = (rock: string, paper : string, scissor: string): Record<string, Shape> => ({
-    [rock]: ROCK,
-    [paper]: PAPER,
-    [scissor]: SCISSOR,
-})
-const THEM_MAPPING :Record<string, number> = createMapping('A', 'B', 'C')
-const ME_MAPPING :Record<string, number> = createMapping('X', 'Y', 'Z')
+type Mapping = Record<string, Shape>
+const THEM_MAPPING : Mapping = { 'A': ROCK, 'B': PAPER, 'C': SCISSOR }
+const US_MAPPING : Mapping = { 'X': ROCK, 'Y': PAPER, 'Z': SCISSOR }
 
-// match points
+// game rules
 
-const WIN_POINTS = 6
-const TIE_POINTS = 3
-const LOSE_POINTS = 0
-
-const RULES: Record<string,Record<string,number>> = {
+const RULES: Record<Shape, Record<Shape, RoundResult>> = {
     [ROCK]: {
-        [ROCK]: TIE_POINTS,
-        [PAPER]: WIN_POINTS,
-        [SCISSOR]: LOSE_POINTS,
+        [ROCK]: TIE,
+        [PAPER]: WIN,
+        [SCISSOR]: LOSE,
     },
     [PAPER]: {
-        [ROCK]: LOSE_POINTS,
-        [PAPER]: TIE_POINTS,
-        [SCISSOR]: WIN_POINTS,
+        [ROCK]: LOSE,
+        [PAPER]: TIE,
+        [SCISSOR]: WIN,
     },
     [SCISSOR]: {
-        [ROCK]: WIN_POINTS,
-        [PAPER]: LOSE_POINTS,
-        [SCISSOR]: TIE_POINTS,
+        [ROCK]: WIN,
+        [PAPER]: LOSE,
+        [SCISSOR]: TIE,
     }
 }
+// other possible (flatten) declaration for the previous
+// const GAME_RULES = [
+//     ['🪨', '🪨', '🤝'],
+//     ['🪨', '🧻', '👍'],
+//     ['🪨', '✂️', '👎'],
+//
+//     ['🧻', '🪨', '👎'],
+//     ['🧻', '🧻', '🤝'],
+//     ['🧻', '✂️', '👍'],
+//
+//     ['✂️', '🪨', '👍'],
+//     ['✂️', '🧻', '👎'],
+//     ['✂️', '✂️', '🤝'],
+// ]
+
+// option 2 just declare the minimum rules without caring the order
+// const GAME_RULES_WITHOUT_ORDER = [
+//     '🧻'.beats('🪨'),
+//     '🪨'.beats('✂️'),
+//     '✂️'.beats('🧻'),
+// ]
 
 type PlayInstruction = [them: Shape, me: Shape]
 
 //
+// behavior
 //
 
-const mapToken = (t: string, i: number) : Shape => ((i === 0) ? THEM_MAPPING : ME_MAPPING)[t]
-const parse = (s: string) => (s.split(' ').map(mapToken)) as PlayInstruction
+const parseTokens = (tuple: [string, string]) : PlayInstruction => [THEM_MAPPING[tuple[0]], US_MAPPING[tuple[1]]]
+const parse = (s: string) => parseTokens(s.split(' ') as [string, string])
 
-const computeRoundScore = ([them, me]: PlayInstruction) => RULES[them][me] + SHAPE_POINTS[me]
+const computeRoundScore = ([them, me]: PlayInstruction) => RESULT_POINTS[RULES[them][me]] + SHAPE_POINTS[me]
 const playAndComputeRoundScore = pipe(parse, computeRoundScore)
 
-export const exercise = (plays: string[]) =>
-    plays.reduce((total, play) => total + playAndComputeRoundScore(play), 0)
+export const exercise = (plays: string[]) => plays.reduce(
+    (total, play) => total + playAndComputeRoundScore(play),
+    0
+)
