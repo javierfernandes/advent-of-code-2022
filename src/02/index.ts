@@ -1,9 +1,7 @@
-import { pipe }  from 'ramda'
+import {pipe, toPairs} from 'ramda'
 
 //
 // --- Day 2: Rock Paper Scissors ---
-//
-// What would your total score be if everything goes exactly according to your strategy guide?
 //
 
 // Shapes
@@ -26,7 +24,6 @@ const RESULT_POINTS: Record<RoundResult, number> = {
 // parsing rules
 type Mapping = Record<string, Shape>
 const THEM_MAPPING : Mapping = { 'A': 'ROCK', 'B': 'PAPER', 'C': 'SCISSOR' }
-const US_MAPPING : Mapping = { 'X': 'ROCK', 'Y': 'PAPER', 'Z': 'SCISSOR' }
 
 // game rules
 
@@ -47,20 +44,6 @@ const RULES: Record<Shape, Record<Shape, RoundResult>> = {
         SCISSOR: 'TIE',
     }
 }
-// other possible (flatten) declaration for the previous
-// const GAME_RULES = [
-//     ['🪨', '🪨', '🤝'],
-//     ['🪨', '🧻', '👍'],
-//     ['🪨', '✂️', '👎'],
-//
-//     ['🧻', '🪨', '👎'],
-//     ['🧻', '🧻', '🤝'],
-//     ['🧻', '✂️', '👍'],
-//
-//     ['✂️', '🪨', '👍'],
-//     ['✂️', '🧻', '👎'],
-//     ['✂️', '✂️', '🤝'],
-// ]
 
 // option 2 just declare the minimum rules without caring the order
 // const RULES = makeAllPossibleScenarios(
@@ -71,16 +54,56 @@ const RULES: Record<Shape, Record<Shape, RoundResult>> = {
 type PlayInstruction = [them: Shape, me: Shape]
 
 //
-// behavior
+// generic behavior between parts
 //
 
-const parseTokens = (tuple: [string, string]) : PlayInstruction => [THEM_MAPPING[tuple[0]], US_MAPPING[tuple[1]]]
-const parse = (s: string) => parseTokens(s.split(' ') as [string, string])
+type UsParser = (us: string, them: Shape) => Shape
+
+const parse = (parseUsPart: UsParser, s: string) => {
+    const [them, ours] = s.split(' ')
+    const theirShape = THEM_MAPPING[them]
+    return [theirShape, parseUsPart(ours, theirShape)] as PlayInstruction
+}
 
 const computeRoundScore = ([them, me]: PlayInstruction) => RESULT_POINTS[RULES[them][me]] + SHAPE_POINTS[me]
-const playAndComputeRoundScore = pipe(parse, computeRoundScore)
+const playAndComputeRoundScore = (usParser: UsParser, play: string) => computeRoundScore(parse(usParser, play))
 
-export const exercise = (plays: string[]) => plays.reduce(
-    (total, play) => total + playAndComputeRoundScore(play),
+const makePart = (parser: UsParser) => (plays: string[]) => plays.reduce(
+    (total, play) => total + playAndComputeRoundScore(parser, play),
     0
 )
+
+//
+// part 1
+//
+
+const US_MAPPING : Mapping = { 'X': 'ROCK', 'Y': 'PAPER', 'Z': 'SCISSOR' }
+
+export const part1 = makePart(us => US_MAPPING[us])
+
+//
+// part 2
+//
+
+const PART2_MAPPING: Record<string, RoundResult> = {
+    X: 'LOSE',
+    Y: 'TIE',
+    Z: 'WIN'
+}
+
+const findShapeThat = (options: Record<Shape, RoundResult>, expected: RoundResult): Shape =>
+    Object.keys(options)
+        .find(key => options[key as Shape] === expected) as Shape
+
+const whatBeats = (theirs: Shape) => findShapeThat(RULES[theirs], 'WIN')
+const whatLosesAgainst = (theirs: Shape) => findShapeThat(RULES[theirs], 'LOSE')
+const chooseShape = (theirs:Shape, result: RoundResult): Shape => {
+    switch (result) {
+        case 'TIE': return theirs
+        case 'WIN': return whatBeats(theirs)
+        case 'LOSE': return whatLosesAgainst(theirs)
+        default:
+            throw new Error('Unknown expected result')
+    }
+}
+export const part2 = makePart((expectedResult, theirs) => chooseShape(theirs, PART2_MAPPING[expectedResult]))
