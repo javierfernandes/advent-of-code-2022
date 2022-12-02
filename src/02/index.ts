@@ -18,7 +18,7 @@ const SHAPE_POINTS : { [key: string]: number } = {
     [ME_SCISSOR]: 3
 }
 
-type PlayInstruction = [string, string]
+type PlayInstruction = [them: string, me: string]
 
 //
 //
@@ -48,7 +48,7 @@ const computePlayScore = ([them, me]: PlayInstruction): number => {
 const shapeScore = (shape: string) => SHAPE_POINTS[shape]
 
 const computeRoundScore = (play: PlayInstruction) => computePlayScore(play) + shapeScore(play[1])
-const playAndComputeScore = pipe(parse, computeRoundScore)
+const playAndComputeRoundScore = pipe(parse, computeRoundScore)
 
 export const exercise = (plays: string[]) =>
-    plays.reduce((total, play) => total + playAndComputeScore(play), 0)
+    plays.reduce((total, play) => total + playAndComputeRoundScore(play), 0)
