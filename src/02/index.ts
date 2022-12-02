@@ -6,43 +6,56 @@ import { pipe }  from 'ramda'
 // What would your total score be if everything goes exactly according to your strategy guide?
 //
 
-const THEM_ROCK = 'A', THEM_PAPER = 'B', THEM_SCISSOR = 'C'
-const ME_ROCK = 'X', ME_PAPER = 'Y', ME_SCISSOR = 'Z'
+// Shapes
+enum Shape { ROCK, PAPER, SCISSOR }
+const { ROCK, PAPER, SCISSOR } = Shape
+
+const SHAPE_POINTS : Record<Shape,number> = {
+    [ROCK]: 1,
+    [PAPER]: 2,
+    [SCISSOR]: 3
+}
+
+// parsing rules
+const createMapping = (rock: string, paper : string, scissor: string): Record<string, Shape> => ({
+    [rock]: ROCK,
+    [paper]: PAPER,
+    [scissor]: SCISSOR,
+})
+const THEM_MAPPING :Record<string, number> = createMapping('A', 'B', 'C')
+const ME_MAPPING :Record<string, number> = createMapping('X', 'Y', 'Z')
+
+// match points
 
 const WIN_POINTS = 6
 const TIE_POINTS = 3
 const LOSE_POINTS = 0
 
-const SHAPE_POINTS : { [key: string]: number } = {
-    [ME_ROCK]: 1,
-    [ME_PAPER]: 2,
-    [ME_SCISSOR]: 3
-}
-
 const RULES: Record<string,Record<string,number>> = {
-    [THEM_ROCK]: {
-        [ME_ROCK]: TIE_POINTS,
-        [ME_PAPER]: WIN_POINTS,
-        [ME_SCISSOR]: LOSE_POINTS,
+    [ROCK]: {
+        [ROCK]: TIE_POINTS,
+        [PAPER]: WIN_POINTS,
+        [SCISSOR]: LOSE_POINTS,
     },
-    [THEM_PAPER]: {
-        [ME_ROCK]: LOSE_POINTS,
-        [ME_PAPER]: TIE_POINTS,
-        [ME_SCISSOR]: WIN_POINTS,
+    [PAPER]: {
+        [ROCK]: LOSE_POINTS,
+        [PAPER]: TIE_POINTS,
+        [SCISSOR]: WIN_POINTS,
     },
-    [THEM_SCISSOR]: {
-        [ME_ROCK]: WIN_POINTS,
-        [ME_PAPER]: LOSE_POINTS,
-        [ME_SCISSOR]: TIE_POINTS,
+    [SCISSOR]: {
+        [ROCK]: WIN_POINTS,
+        [PAPER]: LOSE_POINTS,
+        [SCISSOR]: TIE_POINTS,
     }
 }
 
-type PlayInstruction = [them: string, me: string]
+type PlayInstruction = [them: Shape, me: Shape]
 
 //
 //
 
-const parse = (s: string) => s.split(' ') as PlayInstruction
+const mapToken = (t: string, i: number) : Shape => ((i === 0) ? THEM_MAPPING : ME_MAPPING)[t]
+const parse = (s: string) => (s.split(' ').map(mapToken)) as PlayInstruction
 
 const computeRoundScore = ([them, me]: PlayInstruction) => RULES[them][me] + SHAPE_POINTS[me]
 const playAndComputeRoundScore = pipe(parse, computeRoundScore)
