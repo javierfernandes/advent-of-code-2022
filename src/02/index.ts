@@ -18,6 +18,24 @@ const SHAPE_POINTS : { [key: string]: number } = {
     [ME_SCISSOR]: 3
 }
 
+const RULES: Record<string,Record<string,number>> = {
+    [THEM_ROCK]: {
+        [ME_ROCK]: TIE_POINTS,
+        [ME_PAPER]: WIN_POINTS,
+        [ME_SCISSOR]: LOSE_POINTS,
+    },
+    [THEM_PAPER]: {
+        [ME_ROCK]: LOSE_POINTS,
+        [ME_PAPER]: TIE_POINTS,
+        [ME_SCISSOR]: WIN_POINTS,
+    },
+    [THEM_SCISSOR]: {
+        [ME_ROCK]: WIN_POINTS,
+        [ME_PAPER]: LOSE_POINTS,
+        [ME_SCISSOR]: TIE_POINTS,
+    }
+}
+
 type PlayInstruction = [them: string, me: string]
 
 //
@@ -25,24 +43,7 @@ type PlayInstruction = [them: string, me: string]
 
 const parse = (s: string) : PlayInstruction => s.split(' ') as PlayInstruction
 
-const computePlayScore = ([them, me]: PlayInstruction): number => {
-    if (them === THEM_ROCK) {
-        if (me === ME_ROCK) return TIE_POINTS
-        if (me === ME_PAPER) return WIN_POINTS
-        if (me === ME_SCISSOR) return LOSE_POINTS
-    }
-    else if (them === THEM_PAPER) {
-        if (me === ME_ROCK) return LOSE_POINTS
-        if (me === ME_PAPER) return TIE_POINTS
-        if (me === ME_SCISSOR) return WIN_POINTS
-    }
-    else if (them === THEM_SCISSOR) {
-        if (me === ME_ROCK) return WIN_POINTS
-        if (me === ME_PAPER) return LOSE_POINTS
-        if (me === ME_SCISSOR) return TIE_POINTS
-    }
-    throw new Error(`Unknown combination ${them} - ${me}`)
-}
+const computePlayScore = ([them, me]: PlayInstruction): number => RULES[them][me]
 
 
 const shapeScore = (shape: string) => SHAPE_POINTS[shape]
