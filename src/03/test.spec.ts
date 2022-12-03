@@ -2,7 +2,7 @@ import { part1, part2 } from "./index"
 import { readFileSync } from "fs"
 import path from "path"
 
-describe('advent-of-code-2022 / 0x', () => {
+describe('advent-of-code-2022 / day 3', () => {
 
     describe('part1', () => {
 

@@ -1,7 +1,11 @@
 //
 // --- Day X: xxx ---
 //
-// Comment here
-//
-export const myFunction = (): void => {
+
+export const part1 = (lines: string[]): number => {
+    throw new Error('Not implemented yet')
+}
+
+export const part2 = (lines: string[]): number => {
+    throw new Error('Not implemented yet')
 }

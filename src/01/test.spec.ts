@@ -2,7 +2,7 @@ import { top3Elves } from "./index"
 import { readFileSync } from "fs"
 import * as path from 'path'
 
-describe('advent-of-code-2022 / 01', () => {
+describe('advent-of-code-2022 / day 1', () => {
 
     it(`
     [
