@@ -4,7 +4,7 @@
 // Comment here
 //
 
-import {assoc, head, intersection, range} from "ramda";
+import {assoc, head, intersection, range, splitEvery} from "ramda";
 
 const splitRucksack = (rucksack: string) => {
     const c1 = rucksack.slice(0, rucksack.length / 2)
@@ -22,18 +22,30 @@ const PRIORITIES: Record<string, number> = {
 
 const priorityOf = (char: string | undefined) => char ? PRIORITIES[char[0]] : 0
 
-export const exercise = (input: string[]): number => input
+
+//
+// PART 1
+//
+
+export const part1 = (input: string[]): number => input
 .map((rucksack: string) => {
     const [compartment1, compartment2] = splitRucksack(rucksack)
     const repeated = intersection(compartment1.split(''), compartment2.split(''))
-
-    // console.log('rucksack', rucksack)
-    // console.log('c1', compartment1)
-    // console.log('c2', compartment2)
-    // console.log('repeated', repeated)
-
     return head(repeated)
 })
 .reduce((acc, repeated) => acc + priorityOf(repeated), 0)
 
-console.log('PRIORITIES', PRIORITIES)
+//
+// PART 2
+// TODO: unify with part1 !
+export const part2 = (input: string[]): number => splitEvery(3, input)
+    .map((rucksacks) => {
+        const [r1, r2, r3] = rucksacks
+        const commonTypes = intersection(
+            intersection(r1.split(''), r2.split('')),
+            r3.split('')
+        )
+        return commonTypes[0]
+    })
+// TODO: repeated
+.reduce((acc, repeated) => acc + priorityOf(repeated), 0)

@@ -1,14 +1,13 @@
-import { exercise } from "./index"
-import {readFileSync} from "fs";
-import path from "path";
-import {part1} from "../02";
+import { part1, part2 } from "./index"
+import { readFileSync } from "fs"
+import path from "path"
 
 describe('advent-of-code-2022 / 0x', () => {
 
     describe('part1', () => {
 
         it(`sum of priorities for sample data is 157`, () => {
-            expect(exercise([
+            expect(part1([
                 'vJrwpWtwJgWrhcsFMMfFFhFp',
                 'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
                 'PmmdzqPrVvPwwTWBwg',
@@ -20,7 +19,27 @@ describe('advent-of-code-2022 / 0x', () => {
 
         it('should give the result with the given input data', () => {
             const content = readFileSync(path.join(__dirname, 'data.txt'), 'utf8').split('\n')
-            expect(exercise(content)).toEqual(0)
+            expect(part1(content)).toEqual(0)
+        })
+
+    })
+
+    describe('part2', () => {
+
+        it(`sum of priorities for sample data is 157`, () => {
+            expect(part2([
+                'vJrwpWtwJgWrhcsFMMfFFhFp',
+                'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
+                'PmmdzqPrVvPwwTWBwg',
+                'wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn',
+                'ttgJtRGJQctTZtZT',
+                'CrZsJsPPZsGzwwsLwLmpwMDw',
+            ])).toBe(70)
+        })
+
+        it.only('should give the result with the given input data', () => {
+            const content = readFileSync(path.join(__dirname, 'data.txt'), 'utf8').split('\n')
+            expect(part2(content)).toEqual(2607)
         })
 
     })
