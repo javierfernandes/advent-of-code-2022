@@ -2,8 +2,12 @@
 // --- Day 3: xxx ---
 //
 
-import {assoc, head, intersection, pipe, range, splitAt, splitEvery} from "ramda"
+import {add, head, intersection, pipe, split, splitAt, splitEvery} from 'ramda'
 
+//
+// First we build a PRIORITIES map object to resolve priorities of characters.
+// A helper function to create the dictionary (recursive)
+//
 const priorityMap = (startChar:string, endChar:string, startPriority: number) : Record<string, number> => {
     const thisChar = ({ [startChar]: startPriority })
     if (startChar === endChar) return thisChar
@@ -21,31 +25,31 @@ const PRIORITIES: Record<string, number> = {
 
 const priorityOf = (char: string | undefined) => char ? PRIORITIES[char[0]] : 0
 
+//
+// rucksacks common functions
+//
+
 const splitRucksackCompartments = (rucksack: string) => splitAt(rucksack.length / 2, rucksack)
 
-const findRepeatedType = ([compartment1, compartment2]: string[]) =>
-    head(intersection(compartment1.split(''), compartment2.split('')))
-
-const sumPriorities = (sum:number, repeated:string|undefined): number => sum + priorityOf(repeated)
+/** find the repeated character in a list of strings (might be compartments or whole rucksacks) */
+const findRepeatedCharacter = (strings: string[]) => head(strings
+    .map(split('')) // must map from string to string[] (list of characters) to use reduce
+    .reduce(intersection) // this should be done in a single iteration
+)
 
 //
 // PART 1
 //
 
 export const part1 = (input: string[]): number => input
-    .map(pipe(splitRucksackCompartments, findRepeatedType))
-    .reduce(sumPriorities, 0)
+    .map(pipe(splitRucksackCompartments, findRepeatedCharacter, priorityOf))
+    .reduce(add)
 
 //
 // PART 2
 //
-export const part2 = (input: string[]): number => splitEvery(3, input)
-    .map((rucksacks) => {
-        const [r1, r2, r3] = rucksacks
-        const commonTypes = intersection(
-            intersection(r1.split(''), r2.split('')),
-            r3.split('')
-        )
-        return commonTypes[0]
-    })
-    .reduce(sumPriorities, 0)
+
+export const part2 = (input: string[]): number =>
+    splitEvery(3, input)
+    .map(pipe(findRepeatedCharacter, priorityOf))
+    .reduce(add)
