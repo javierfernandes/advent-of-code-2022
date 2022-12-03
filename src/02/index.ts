@@ -59,10 +59,10 @@ type PlayInstruction = [them: Shape, me: Shape]
 
 type UsParser = (us: string, them: Shape) => Shape
 
-const parse = (parseUsPart: UsParser, s: string) => {
+const parse = (parseOurPart: UsParser, s: string) => {
     const [them, ours] = s.split(' ')
     const theirShape = THEM_MAPPING[them]
-    return [theirShape, parseUsPart(ours, theirShape)] as PlayInstruction
+    return [theirShape, parseOurPart(ours, theirShape)] as PlayInstruction
 }
 
 const computeRoundScore = ([them, me]: PlayInstruction) => RESULT_POINTS[RULES[them][me]] + SHAPE_POINTS[me]
