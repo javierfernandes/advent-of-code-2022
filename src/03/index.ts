@@ -1,43 +1,44 @@
 //
-// --- Day X: xxx ---
-//
-// Comment here
+// --- Day 3: xxx ---
 //
 
-import {assoc, head, intersection, range, splitEvery} from "ramda";
+import {assoc, head, intersection, pipe, range, splitAt, splitEvery} from "ramda"
 
-const splitRucksack = (rucksack: string) => {
-    const c1 = rucksack.slice(0, rucksack.length / 2)
-    const c2 = rucksack.slice(rucksack.length / 2)
-    return [c1, c2]
+const priorityMap = (startChar:string, endChar:string, startPriority: number) : Record<string, number> => {
+    const thisChar = ({ [startChar]: startPriority })
+    if (startChar === endChar) return thisChar
+    return ({
+        ...thisChar,
+        ...priorityMap(String.fromCharCode(startChar.charCodeAt(0) + 1), endChar, startPriority + 1)
+    })
 }
 
-// TODO: unify reduces
+/** { character: priority } iex. { a: 1, b: 2, ..., z: 26, A: 27, B: 28, ... } */
 const PRIORITIES: Record<string, number> = {
-    // a-z: 'a' in JS starts at 97, here it is 1
-    ...range(97, 97 + 26).reduce((acc, charCode) => assoc(String.fromCharCode(charCode), charCode - 96, acc), {}),
-    // A-Z: in JS A is 65, here it is 27, so 65 - 27 = 38, so delta is 38
-    ...range(65, 65 + 26).reduce((acc, charCode) => assoc(String.fromCharCode(charCode), charCode - 38, acc), {}),
+    ...priorityMap('a', 'z', 1),
+    ...priorityMap('A', 'Z', 27)
 }
 
 const priorityOf = (char: string | undefined) => char ? PRIORITIES[char[0]] : 0
 
+const splitRucksackCompartments = (rucksack: string) => splitAt(rucksack.length / 2, rucksack)
+
+const findRepeatedType = ([compartment1, compartment2]: string[]) =>
+    head(intersection(compartment1.split(''), compartment2.split('')))
+
+const sumPriorities = (sum:number, repeated:string|undefined): number => sum + priorityOf(repeated)
 
 //
 // PART 1
 //
 
 export const part1 = (input: string[]): number => input
-.map((rucksack: string) => {
-    const [compartment1, compartment2] = splitRucksack(rucksack)
-    const repeated = intersection(compartment1.split(''), compartment2.split(''))
-    return head(repeated)
-})
-.reduce((acc, repeated) => acc + priorityOf(repeated), 0)
+    .map(pipe(splitRucksackCompartments, findRepeatedType))
+    .reduce(sumPriorities, 0)
 
 //
 // PART 2
-// TODO: unify with part1 !
+//
 export const part2 = (input: string[]): number => splitEvery(3, input)
     .map((rucksacks) => {
         const [r1, r2, r3] = rucksacks
@@ -47,5 +48,4 @@ export const part2 = (input: string[]): number => splitEvery(3, input)
         )
         return commonTypes[0]
     })
-// TODO: repeated
-.reduce((acc, repeated) => acc + priorityOf(repeated), 0)
+    .reduce(sumPriorities, 0)
