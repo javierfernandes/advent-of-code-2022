@@ -19,7 +19,7 @@ describe('advent-of-code-2022 / day 3', () => {
 
         it('should give the result with the given input data', () => {
             const content = readFileSync(path.join(__dirname, 'data.txt'), 'utf8').split('\n')
-            expect(part1(content)).toEqual(0)
+            expect(part1(content)).toEqual(7597)
         })
 
     })
@@ -37,7 +37,7 @@ describe('advent-of-code-2022 / day 3', () => {
             ])).toBe(70)
         })
 
-        it.only('should give the result with the given input data', () => {
+        it('should give the result with the given input data', () => {
             const content = readFileSync(path.join(__dirname, 'data.txt'), 'utf8').split('\n')
             expect(part2(content)).toEqual(2607)
         })
