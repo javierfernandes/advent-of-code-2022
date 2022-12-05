@@ -2,7 +2,7 @@
 // --- Day 5: Supply Stacks ---
 //
 
-import { append, applySpec, compose, drop, head, isEmpty, join, lensProp, map, match, not, nth, over, pipe, splitEvery, times, trim, when } from 'ramda'
+import { append, applySpec, drop, head, isEmpty, join, lensProp, map, match, nth, over, pipe, splitEvery, times } from 'ramda'
 
 export type Stack = string[]
 type Move = { from: number, to: number, amount: number }
@@ -11,14 +11,14 @@ type Move = { from: number, to: number, amount: number }
 // Processing: parsing + evaluating moves
 //
 
-const parseStackToken = when(compose(not, isEmpty), pipe(nth(1), trim)) // ie: [A] => A
+const parseStackToken = (s:string) => s && s[1] // ie: [A] => A
 export const stackLineProcessor = (line: string, stacks: Stack[]) => {
     if (isEmpty(stacks)) { // first line, capture the size of the stacks (width) and init them
         stacks = times(() => [], Math.floor(line.length / 3))
     }
     return splitEvery(4, line)// process the stacks line as "tokens" 1 for each stack
-        .map(parseStackToken)
-        .reduce((stacks, token, i) => {
+        .reduce((stacks, t, i) => {
+            const token = parseStackToken(t.trim())
             if (isEmpty(token)) return stacks
             return over(lensProp(i), append(token), stacks)
         }, stacks)
