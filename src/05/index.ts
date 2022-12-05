@@ -2,72 +2,72 @@
 // --- Day 5: Supply Stacks ---
 //
 
-import { applySpec, compose, drop, head, isEmpty, join, map, match, not, nth, pipe, prop, splitEvery, times, trim, when } from 'ramda'
+import { append, applySpec, compose, drop, head, isEmpty, join, lensProp, map, match, not, nth, over, pipe, splitEvery, times, trim, when } from 'ramda'
 
-type Stack = string[]
+export type Stack = string[]
 type Move = { from: number, to: number, amount: number }
-type State = { stacks: Stack[], moves: Move[] }
 
 //
-// Parsing
+// Processing: parsing + evaluating moves
 //
 
-const parseStackToken = when(compose(not, isEmpty), nth(1)) // ie: [A] => A
-export const stacksParser = (line: string, result: State) => {
-    if (isEmpty(result.stacks)) { // first line, capture the size of the stacks (width) and init them
-        result.stacks = times(() => [], Math.floor(line.length / 3))
+const parseStackToken = when(compose(not, isEmpty), pipe(nth(1), trim)) // ie: [A] => A
+export const stackLineProcessor = (line: string, stacks: Stack[]) => {
+    if (isEmpty(stacks)) { // first line, capture the size of the stacks (width) and init them
+        stacks = times(() => [], Math.floor(line.length / 3))
     }
-    splitEvery(4, line)
-        .map(pipe(trim, parseStackToken))
-        .forEach((token, i) => {
-            if (!isEmpty(token))
-                result.stacks[i].push(token)
-        })
+    return splitEvery(4, line)// process the stacks line as "tokens" 1 for each stack
+        .map(parseStackToken)
+        .reduce((stacks, token, i) => {
+            if (isEmpty(token)) return stacks
+            return over(lensProp(i), append(token), stacks)
+        }, stacks)
 }
 
-const parseMoveParts = pipe(
+// move
+
+const parseMove = pipe(
     match(/move (\d*) from (\d*) to (\d*)/),
     drop(1),
     map(parseInt),
     applySpec({ amount: nth(0), from: nth(1), to: nth(2) })
 )
-export const movesParser = (l: string, { moves }: State) => moves.push(parseMoveParts(l))
+
+const applyMove = (stacks: Stack[], reverse: boolean, { amount, from, to }: Move) => {
+    // mutable logic. It could be migrated to generate a new stacks[] instead of mutating it
+    const elements = stacks[from - 1].splice(0, amount)
+    stacks[to - 1].unshift(...reverse ? elements.reverse() : elements)
+    return stacks
+}
+
+export const moveLineProcessor = (reversing: boolean) => (line: string, stacks: Stack[]) =>
+    applyMove(stacks, reversing, parseMove(line))
 const isStackFooter = (line:string) => line.match('\w\d')
+const isStackMovesSeparator = (line: string) => line === ''
 
 /**
  * Parses the list of lines producing a State object
  * It mutates the state object to construct it using 2 different (mutating) parser functions/strategies
  */
-export const parse = (lines: string[]): State => {
-    let parser = stacksParser // first parse the stack part (kinda strategy)
+export const processLines = (reversing: boolean) => (lines: string[]): Stack[] => {
+    let processor = stackLineProcessor // first parse the stack part (kinda strategy)
 
-    return lines.reduce((state: State, line: string) => {
-        if (line === '') { parser = movesParser } // switch to moves parser
-        else if (!isStackFooter(line)) {  // ignore line with stack numbers (footer)
-            parser(line, state)
+    return lines.reduce((stacks: Stack[], line: string) => {
+        if (isStackMovesSeparator(line)) {
+            processor = moveLineProcessor(reversing) // switch to moves processing
+            return stacks
         }
-        return state
-    }, ({ stacks: [], moves: [] })) // new empty state
+        else if (isStackFooter(line)) {  // ignore line with stack numbers (footer)
+            return stacks
+        } else {
+            return processor(line, stacks)
+        }
+    }, [])
 }
 
-//
-// Processing Logic
-//
-
-const applyMove = ({ stacks }: State, reverse: boolean) => ({ amount, from, to }: Move) => {
-    const elements = stacks[from - 1].splice(0, amount)
-    stacks[to - 1].unshift(...reverse ? elements.reverse() : elements)
-}
-const applyAllMoves = (state: State, reverse: boolean) => { state.moves.forEach(applyMove(state, reverse)); return state }
-
-const headOfStacksString = pipe(prop('stacks'), map(head), join(''))
-
-const makePart = (reversing: boolean) => (lines: string[]): string =>
-    headOfStacksString(applyAllMoves(parse(lines), reversing))
-
-//
 // Parts
-//
+
+const makePart = (reversing: boolean) => pipe(processLines(reversing), map(head), join(''))
 
 export const part1 = makePart(true)
 export const part2 = makePart(false)

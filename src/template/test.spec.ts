@@ -1,6 +1,7 @@
 import { part1, part2 } from "./index"
 import { readFileSync } from "fs"
 import path from "path"
+import { describe, it, expect, jest, test} from '@jest/globals'
 
 describe('advent-of-code-2022 / ', () => {
 
