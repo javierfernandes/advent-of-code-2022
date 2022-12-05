@@ -2,10 +2,10 @@
 // --- Day 5: Supply Stacks ---
 //
 
-import { append, applySpec, drop, head, isEmpty, join, lensProp, map, match, nth, over, pipe, splitEvery, times } from 'ramda'
+import { append, drop, head, isEmpty, join, lensProp, map, match, over, pipe, splitEvery, times } from 'ramda'
 
 export type Stack = string[]
-type Move = { from: number, to: number, amount: number }
+type Move = [from: number, to: number, amount: number]
 
 //
 // Processing: parsing + evaluating moves
@@ -30,10 +30,9 @@ const parseMove = pipe(
     match(/move (\d*) from (\d*) to (\d*)/),
     drop(1),
     map(parseInt),
-    applySpec({ amount: nth(0), from: nth(1), to: nth(2) })
 )
 
-const applyMove = (stacks: Stack[], reverse: boolean, { amount, from, to }: Move) => {
+const applyMove = (stacks: Stack[], reverse: boolean, [amount, from, to]: Move) => {
     // mutable logic. It could be migrated to generate a new stacks[] instead of mutating it
     const elements = stacks[from - 1].splice(0, amount)
     stacks[to - 1].unshift(...reverse ? elements.reverse() : elements)
