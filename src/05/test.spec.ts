@@ -4,6 +4,8 @@ import path from "path"
 
 describe('advent-of-code-2022 / Day 05', () => {
 
+    const move = (amount: number, from: number, to: number) => ({ from, to, amount })
+
     describe('parsing', () => {
 
         describe('stackParser', () => {
@@ -97,17 +99,25 @@ move 1 from 1 to 2`.split('\n')
 
     })
 
-    describe.skip('part2', () => {
+    describe('part2', () => {
 
         it(`should work as the given example`, () => {
-            expect(part2([
-                // TODO: example input here
-            ])).toBe(666) // TODO
+            expect(part2(
+`    [D]    
+[N] [C]    
+[Z] [M] [P]
+ 1   2   3 
+
+move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2`.split('\n')
+            )).toBe('MCD')
         })
 
         it('should work with the given data.txt', () => {
             expect(part2(readDataFile()))
-                .toEqual(666) // TODO
+                .toEqual('ZFSJBPRFP')
         })
 
     })
