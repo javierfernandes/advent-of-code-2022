@@ -6,10 +6,9 @@ import { uniq } from 'ramda'
 
 type Memory = { found?: number, chars: string[] }
 
-const process = (input: string, limit: number): number|undefined => {
-    const initValue = { startOfPacket: undefined, chars: [] }  as Memory
-
-    return input.split('').reduce((memory, char, i) => {
+const process = (input: string, limit: number): number|undefined => input
+    .split('')
+    .reduce((memory, char, i) => {
         memory.chars.push(char)
         // trim memory
         if (memory.chars.length > limit) { memory.chars.splice(0, 1) }
@@ -19,8 +18,8 @@ const process = (input: string, limit: number): number|undefined => {
             memory.found = i + 1
         }
         return memory
-    }, initValue ).found
-}
+    }, { chars: [] }  as Memory )
+    .found
 
 export const part1 = (input: string) => process(input, 4)
 
