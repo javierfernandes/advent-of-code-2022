@@ -8,30 +8,39 @@ import { uniq } from 'ramda'
 // Solution 1: iterating using reduce
 //
 
-type Memory = { found?: number, chars: string[] }
 export type Solution = (input: string[], limit: number) => number | undefined
 
-export const solution1: Solution = (input, limit) => input
-    .reduce((memory, char, i) => {
-        memory.chars.push(char)
-        // trim memory
-        if (memory.chars.length > limit) { memory.chars.splice(0, 1) }
+const createMemory = (limit: number) => {
+    const mem: string[] = []
+    let found: number
+    const self = {
+        append: (char: string, i: number) => {
+            // append
+            mem.push(char)
+            // trim
+            if (mem.length > limit) { mem.splice(0, 1) }
+            // detect
+            if (!found && uniq(mem).length === limit) { found = i + 1 }
+            return self
+        },
+        found: () => found,
+    }
+    return self
+}
 
-        // check pattern
-        if (!memory.found && uniq(memory.chars).length === limit) {
-            memory.found = i + 1
-        }
-        return memory
-    }, { chars: [] }  as Memory )
-    .found
+export const solution1: Solution = (input, limit) => input
+    .reduce(
+        (memory, char, i) => memory.append(char, i),
+     createMemory(limit) )
+    .found()
 
 //
 // Solution 2: iterative recursive
 //
 
-type Store = { append: (s: string) => void, found: () => boolean }
+type Memory = { append: (s: string) => void, found: () => boolean }
 
-const createStore = (limit: number): Store => {
+const createStore = (limit: number): Memory => {
     const mem = [] as string[]
     return {
         append: (char: string) => {
@@ -42,7 +51,7 @@ const createStore = (limit: number): Store => {
     }
 }
 
-const processRecursing = (chars: string[], index: number, memory: Store): number | undefined => {
+const processRecursing = (chars: string[], index: number, memory: Memory): number | undefined => {
     if (chars.length === 0) return undefined
     const [char, ...rest] = chars
     memory.append(char)
